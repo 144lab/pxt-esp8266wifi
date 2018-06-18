@@ -1,0 +1,29 @@
+include settings.mk
+NAME         := simple-gateway
+DEPLOY_NAME  := $(NAME)-$(VERSION)
+TARGET_DIR   := $(CURDIR)/build
+CODE_NAME    := $(DEPLOY_NAME).ino.bin
+DATA_NAME    := $(DEPLOY_NAME).spiffs.bin
+CODE_BIN     := $(TARGET_DIR)/$(CODE_NAME)
+DATA_BIN     := $(TARGET_DIR)/$(DATA_NAME)
+DOCKER       := docker
+TAG          := localhost/$(NAME)
+
+.PHONY: all build checkout shell release
+
+all: build release
+
+build:
+	$(DOCKER) build --rm -t $(TAG) -f Dockerfile .
+	mkdir -p $(TARGET_DIR)
+	@-$(DOCKER) rm -f gw
+	$(DOCKER) create --name gw $(TAG) \
+	&& $(DOCKER) cp gw:/src/build/$(CODE_NAME) $(CODE_BIN) \
+	&& touch $(CODE_BIN)
+	@-$(DOCKER) rm -f gw
+
+shell:
+	$(DOCKER) run -it --rm $(TAG) bash
+
+release:
+	#TODO: implement
