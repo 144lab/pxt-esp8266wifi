@@ -3,7 +3,8 @@ include settings.mk
 ARDUINO_ROOT := /Applications/Arduino.app/Contents/Java
 ARDUINO_PKGS := ~/Library/Arduino15/packages
 ARDUINO_HOME := ~/Documents/Arduino
-SERIAL_PORT  := /dev/tty.usbserial-DN01ES83
+SERIAL_PORT  := /dev/ttyS3
+ESPTOOL      := esptool.py
 
 NAME         := simple-gateway
 DEPLOY_NAME  := $(NAME)-$(VERSION)
@@ -11,13 +12,16 @@ TARGET_DIR   := $(CURDIR)/build
 CODE_SOURCE  := $(CURDIR)/$(NAME)
 CODE_MAIN    := $(CODE_SOURCE)/$(NAME).ino
 CODE_BIN     := $(TARGET_DIR)/$(DEPLOY_NAME).ino.bin
-CODE_SOURCES := $(shell find $(CODE_SOURCE) -type f -maxdepth 1)
+CODE_SOURCES := $(wildcard $(CODE_SOURCE)/*)
 ALL_SOURCS   := $(CODE_SOURCES) $(CODE_SOURCE)/gen/version.h
 
 DEBUG_OPTION := Debug=Disabled,DebugLevel=None____
 #DEBUG_OPTION := Debug=Serial,DebugLevel=HTTPClient
 
 .PHONY: all clean build flash update data format docker genversion
+
+test:
+	touch $(CODE_BIN)
 
 all: clean build 
 
@@ -47,12 +51,12 @@ $(CODE_BIN): $(ALL_SOURCS)
 	mv $(TARGET_DIR)/$(NAME).ino.bin $@
 
 flash: $(CODE_BIN)
-	esptool.py -p $(SERIAL_PORT) -b 230400 --before no_reset --after no_reset write_flash \
+	$(ESPTOOL) -p $(SERIAL_PORT) -b 230400 --before no_reset --after no_reset write_flash \
 	--flash_freq 80m --flash_size 2MB --flash_mode qio \
 	0x000000 $(CODE_BIN)
 
 format: $(DATA_BIN)
-	esptool.py -p $(SERIAL_PORT) -b 230400 --before no_reset --after no_reset write_flash \
+	$(ESPTOOL) -p $(SERIAL_PORT) -b 230400 --before no_reset --after no_reset write_flash \
 	--flash_freq 80m --flash_size 2MB --flash_mode qio \
 	0x100000 $(DATA_BIN)
 

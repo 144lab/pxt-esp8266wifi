@@ -18,7 +18,6 @@ void onData(uint8_t *data, size_t len) {
   if (chunk.length() == 32) {
     return;
   }
-  Serial.printf("command(%dbytes): %s\r\n", buffer.length(), buffer.c_str());
   command = buffer;
   buffer = "";
 }
@@ -54,10 +53,11 @@ void setup() {
   SPISlave.setData(zeros, 32);
   SPISlave.begin();
 
+  WiFi.mode(WIFI_STA);
+
   delay(200);
   Serial.println("");
   Serial.println("boot");
-  Serial.setTimeout(10000);
 }
 
 bool getCommand(String *arg) {
@@ -67,6 +67,7 @@ bool getCommand(String *arg) {
   if (line.length() == 0) {
     return false;
   }
+  Serial.printf("command(%dbytes): %s\r\n", line.length(), line.c_str());
   int from = 0;
   int found = 0;
   while (line.length() > from) {
@@ -82,8 +83,6 @@ bool getCommand(String *arg) {
 }
 
 bool connect(const String &ssid, const String &password) {
-  WiFi.mode(WIFI_STA);
-  delay(200);
   if (!WiFi.begin(ssid.c_str(), password.c_str())) {
     return false;
   }
