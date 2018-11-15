@@ -149,6 +149,7 @@ namespace esp8266wifi {
    */
   //% blockId=esp8266wifi_connect
   //% block="connect Wi-Fi ssid: %ssid| password: %password"
+  //% blockGap=8
   //% blockExternalInputs = 1
   export function connect(ssid: string, password: string): void {
       if (!initialized) {
@@ -185,7 +186,9 @@ namespace esp8266wifi {
    * @param url URL for internet resource ,eg: "http://host-address/path..."
    * @param fingerprint SHA1 fingerprint for server certificate (need for https://) ,eg: ""
    */
-  //% blockId=esp8266wifi_https_get block="http get url %url |fingerprint %fingerprint"
+  //% blockId=esp8266wifi_https_get
+  //% block="http get url: %url| fingerprint: %fingerprint"
+  //% blockGap=8
   //% blockExternalInputs = 1
   export function httpGet(url: string, fingerprint: string): void {
       send("g," + url + "," + fingerprint);
@@ -211,7 +214,9 @@ namespace esp8266wifi {
    * @param fingerprint SHA1 fingerprint for server certificate (need for https://) ,eg: ""
    * @param data post data ,eg: "<data>"
    */
-  //% blockId=esp8266wifi_https_post block="http post url %url |fingerprint %fingerprint |data %data"
+  //% blockId=esp8266wifi_https_post
+  //% block="http post url: %url| fingerprint: %fingerprint| data: %data"
+  //% blockGap=8
   //% blockExternalInputs = 1
   export function httpPost(
       url: string,

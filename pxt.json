@@ -1,7 +1,7 @@
 {
   "name": "esp8266wifi",
   "version": "0.0.1",
-  "description": "Wi-Fi http for ESP8266",
+  "description": "Wi-Fi HTTP Blocks for ESP8266",
   "license": "MIT",
   "dependencies": {
     "core": "*"
